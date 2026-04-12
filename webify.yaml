@@ -1,0 +1,37 @@
+# 腾讯云 Webify 部署配置
+# 文档: https://cloud.tencent.com/document/product/1450
+
+# 构建配置
+build:
+  # 构建命令 (如果是纯静态站点，不需要构建)
+  command: ""
+  # 构建输出目录
+  output: "."
+
+# 部署配置
+deploy:
+  # 静态网站入口文件
+  index: index.html
+  # 404页面
+  error: index.html
+  # 是否启用HTTPS (默认启用)
+  https: true
+
+# 环境变量
+env:
+  # 可以在这里添加环境变量
+  NODE_ENV: production
+
+# 路由规则 (可选)
+routes:
+  # SPA应用需要配置所有路由指向index.html
+  - source: /
+    target: /index.html
+  - source: /weight
+    target: /index.html
+  - source: /diet
+    target: /index.html
+  - source: /exercise
+    target: /index.html
+  - source: /settings
+    target: /index.html
