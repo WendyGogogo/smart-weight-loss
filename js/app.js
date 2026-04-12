@@ -479,11 +479,11 @@ const App = {
     const foods = Storage.getFoodsByDate(this.today);
     const total = Storage.getTotalIntake(this.today);
 
-    // 计算TDEE
+    // 计算TDEE和BMR
     const latestWeight = Storage.getLatestWeight();
-    let tdee = 0;
+    let bmr = 0, tdee = 0;
     if (this.profile && latestWeight) {
-      const bmr = Calculator.calculateBMR(latestWeight.weight, this.profile.height, this.profile.age, this.profile.gender);
+      bmr = Calculator.calculateBMR(latestWeight.weight, this.profile.height, this.profile.age, this.profile.gender);
       tdee = Calculator.calculateTDEE(bmr, this.profile.activityLevel);
     }
 
@@ -494,6 +494,7 @@ const App = {
     document.getElementById('diet-total').textContent = total;
     document.getElementById('diet-target').textContent = targetIntake > 0 ? targetIntake : '--';
     document.getElementById('remaining-calories').textContent = targetIntake > 0 ? remaining : '--';
+    document.getElementById('suggested-intake').textContent = bmr > 0 ? bmr : '--';
 
     // 进度条颜色
     const progressBar = document.getElementById('diet-progress-bar');

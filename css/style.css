@@ -704,6 +704,18 @@ body {
   font-weight: 700;
 }
 
+.suggested-intake {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 6px;
+}
+
+.suggested-intake span {
+  color: var(--primary);
+  font-weight: 600;
+}
+
 /* 手动添加热量 */
 .manual-calorie-input {
   display: flex;

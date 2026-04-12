@@ -36,43 +36,122 @@
 
 ## 🚀 部署方式
 
-### 方式一：腾讯云 Webify（推荐 - 国内访问快）
+> 💡 推荐顺序：Gitee Pages（国内快）> Cloudflare Pages（全球快）> GitHub Pages（简单）
 
-腾讯云 Webify 专为国内用户提供快速稳定的静态网站托管服务。
+---
 
-1. **准备代码**
-   ```bash
-   # 进入项目目录
-   cd smart-weight-loss-v4
-   
-   # 初始化Git仓库并提交
-   git init
-   git add .
-   git commit -m "init"
-   ```
+### 🥇 方案一：Gitee Pages（国内访问最快 - 免费）
 
-2. **上传到 GitHub/GitLab/Gitee**
-   - 在 GitHub/GitLab/Gitee 创建新仓库
-   - 将代码推送到远程仓库
-   ```bash
-   git remote add origin https://github.com/你的用户名/仓库名.git
-   git push -u origin main
-   ```
+**优点**：国内访问速度最快，完全免费  
+**缺点**：需要实名认证
 
-3. **在腾讯云 Webify 部署**
-   - 访问 https://webify.cloud.tencent.com
-   - 登录后点击「新建应用」
-   - 选择「Git 导入」，授权并选择你的仓库
-   - 构建配置：
-     - 构建命令：留空（纯静态网站）
-     - 输出目录：`.` 或 `./`
-   - 点击「部署」，等待完成
-   - 获得 `.webify.site` 结尾的域名（国内访问快）
+1. 访问 [gitee.com](https://gitee.com) 注册/登录
+2. 创建新仓库，命名为 `smart-weight-loss`
+3. 上传代码到仓库（或从 GitHub 导入）
+4. 进入仓库 →「服务」→「Gitee Pages」
+5. 选择部署分支（master/main），点击「启动」
+6. 获得 `https://用户名.gitee.io/smart-weight-loss` 链接
 
-4. **（可选）绑定自定义域名**
-   - 在 Webify 控制台添加自定义域名
-   - 按提示配置 DNS 解析
-   - 国内用户访问速度更快
+**绑定自定义域名（可选）**：
+- 在 Gitee Pages 设置中添加你的域名
+- 在域名 DNS 添加 CNAME 记录指向 Gitee
+
+---
+
+### 🥈 方案二：Cloudflare Pages（全球快 - 免费）
+
+**优点**：全球访问快（包括中国）、完全免费、自动 HTTPS  
+**缺点**：需要科学上网部署
+
+1. 访问 [dash.cloudflare.com](https://dash.cloudflare.com)
+2. 登录后点击「Pages」→「Create a project」
+3. 连接 GitHub 账号，选择 `smart-weight-loss` 仓库
+4. 构建设置：
+   - Framework preset: **None**
+   - Build command: **留空**
+   - Build output directory: `.`
+5. 点击「Save and Deploy」
+6. 获得 `https://xxx.pages.dev` 链接
+
+**国内访问优化**：
+- Cloudflare 在国内有节点，访问速度不错
+- 可以绑定自定义域名加速
+
+---
+
+### 🥉 方案三：GitHub Pages（最简单 - 免费）
+
+**优点**：完全免费，无需额外注册，与代码仓库一起管理  
+**缺点**：国内访问较慢（可能需要科学上网）
+
+#### 自动部署（推荐）
+
+1. 在你的仓库页面点击「**Settings**」
+2. 左侧选择「**Pages**」
+3. Source 选择「**Deploy from a branch**」
+4. Branch 选择「**main**」，文件夹选择「**/(root)**」
+5. 点击「**Save**」，等待 1-2 分钟
+6. 访问 `https://wendygogogo.github.io/smart-weight-loss`
+
+#### 自定义域名（可选）
+
+1. 在 Pages 设置中找到「Custom domain」
+2. 输入你的域名，如 `weightloss.yourdomain.com`
+3. 在你的域名 DNS 添加 CNAME 记录指向 `wendygogogo.github.io`
+4. 等待 DNS 生效，启用 HTTPS
+
+---
+
+### 方案四：Netlify Drop（无需注册 - 免费）
+
+**优点**：无需注册账号，拖拽即可部署  
+**缺点**：国内访问一般
+
+1. 访问 [app.netlify.com/drop](https://app.netlify.com/drop)
+2. 将项目文件夹**拖拽**到网页中
+3. 自动部署完成，获得随机域名
+4. 可点击「Site settings」→「Change site name」修改域名
+
+---
+
+### 方案五：Surge.sh（命令行 - 免费）
+
+**优点**：命令行部署超快，支持自定义域名  
+**缺点**：需要 npm，国内访问一般
+
+```bash
+# 安装 surge
+npm install -g surge
+
+# 进入项目目录并部署
+cd smart-weight-loss-v4
+surge
+
+# 按提示操作，自定义域名如：smart-weight-loss.surge.sh
+```
+
+---
+
+## 📊 方案对比
+
+| 平台 | 国内速度 | 免费期限 | 自定义域名 | 难度 |
+|------|---------|---------|-----------|------|
+| **Gitee Pages** | ⭐⭐⭐ 最快 | 永久 | ✅ | 中 |
+| **Cloudflare Pages** | ⭐⭐ 较快 | 永久 | ✅ | 中 |
+| **GitHub Pages** | ⭐ 一般 | 永久 | ✅ | 低 |
+| **Netlify** | ⭐ 一般 | 永久 | ✅ | 低 |
+| **腾讯云 CloudBase** | ⭐⭐⭐ 最快 | 6个月 | ✅ | 中 |
+
+## 🎯 推荐选择
+
+- **国内用户使用** → **Gitee Pages**（需要实名认证，但速度最快）
+- **全球访问+简单** → **Cloudflare Pages**
+- **最简单快速** → **GitHub Pages** 或 **Netlify Drop**
+
+1. 访问 [Vercel](https://vercel.com)
+2. 点击「Add New Project」
+3. 导入 GitHub 仓库
+4. 点击「Deploy」，自动部署完成
 
 ### 方式二：Gitee Pages（国内免费）
 
