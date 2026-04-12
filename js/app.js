@@ -494,7 +494,6 @@ const App = {
     document.getElementById('diet-total').textContent = total;
     document.getElementById('diet-target').textContent = targetIntake > 0 ? targetIntake : '--';
     document.getElementById('remaining-calories').textContent = targetIntake > 0 ? remaining : '--';
-    document.getElementById('suggested-intake').textContent = bmr > 0 ? bmr : '--';
 
     // 进度条颜色
     const progressBar = document.getElementById('diet-progress-bar');

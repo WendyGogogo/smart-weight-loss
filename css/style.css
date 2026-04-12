@@ -706,14 +706,10 @@ body {
 
 .suggested-intake {
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   color: var(--text-light);
-  margin-top: 6px;
-}
-
-.suggested-intake span {
-  color: var(--primary);
-  font-weight: 600;
+  margin-top: 8px;
+  width: 100%;
 }
 
 /* 手动添加热量 */
