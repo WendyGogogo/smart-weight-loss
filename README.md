@@ -260,4 +260,48 @@ weight-loss-tracker-v2/
 
 ---
 
+## 🏆 排行榜后端部署（可选）
+
+排行榜功能默认使用本地演示数据。如需真实排行榜，需要部署 Cloudflare Worker：
+
+### 部署步骤
+
+1. **准备 Cloudflare 账号**
+   - 访问 https://dash.cloudflare.com 注册/登录
+
+2. **创建 KV 存储**
+   - Workers & Pages → KV
+   - 创建 Namespace: `RANKING_DATA`
+
+3. **部署 Worker**
+   - Workers & Pages → Create Service
+   - 复制 `worker.js` 代码到编辑器
+   - 设置 → Variables → KV Namespace Bindings
+   - 添加: `RANKING` = `RANKING_DATA`
+   - 保存并部署
+
+4. **配置前端**
+   - 复制 Worker URL（如 `https://your-worker.your-subdomain.workers.dev`）
+   - 修改 `app.js` 中的 API 调用地址
+
+### API 接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/api/ranking` | 获取排行榜 |
+| POST | `/api/ranking` | 上传/更新数据 |
+
+### POST 请求示例
+
+```json
+{
+  "nickname": "减脂达人",
+  "progress": 75,
+  "weightLost": 7.5,
+  "avatar": "👤"
+}
+```
+
+---
+
 有问题或建议？欢迎反馈！
