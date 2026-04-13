@@ -1361,3 +1361,235 @@ body {
 #weight-chart {
   max-height: 200px;
 }
+
+/* 排行榜页面 */
+.ranking-hero {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 16px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.my-rank-badge {
+  text-align: center;
+}
+
+.rank-number {
+  display: block;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.rank-label {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.my-progress {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.progress-ring-small {
+  width: 80px;
+  height: 80px;
+  position: relative;
+}
+
+.progress-ring-small svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-ring-small .ring-bg {
+  fill: none;
+  stroke: rgba(255,255,255,0.2);
+  stroke-width: 8;
+}
+
+.progress-ring-small .ring-progress {
+  fill: none;
+  stroke: white;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 251;
+  stroke-dashoffset: 251;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.progress-ring-small .ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progress-ring-small .ring-center span {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.progress-info p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.progress-info p.sub {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ranking-loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  gap: 12px;
+}
+
+.ranking-item.top-1 {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+}
+
+.ranking-item.top-2 {
+  background: linear-gradient(135deg, #c0c0c0 0%, #e0e0e0 100%);
+}
+
+.ranking-item.top-3 {
+  background: linear-gradient(135deg, #cd7f32 0%, #daa520 100%);
+}
+
+.rank-position {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.ranking-item.top-1 .rank-position,
+.ranking-item.top-2 .rank-position,
+.ranking-item.top-3 .rank-position {
+  background: rgba(255,255,255,0.8);
+}
+
+.rank-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.rank-info {
+  flex: 1;
+}
+
+.rank-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.rank-progress {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+.rank-value {
+  text-align: right;
+}
+
+.rank-percent {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--primary);
+}
+
+.ranking-item.top-1 .rank-percent,
+.ranking-item.top-2 .rank-percent,
+.ranking-item.top-3 .rank-percent {
+  color: var(--text-primary);
+}
+
+.rank-diff {
+  font-size: 11px;
+  color: var(--success);
+  margin-top: 2px;
+}
+
+.ranking-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rule-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+}
+
+.rule-icon {
+  font-size: 24px;
+}
+
+.rule-item p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.update-time {
+  font-size: 12px;
+  color: var(--text-light);
+}

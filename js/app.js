@@ -61,6 +61,7 @@ const App = {
 
     // 填充设置表单
     if (this.profile) {
+      document.getElementById('setting-nickname').value = this.profile.nickname || '';
       document.getElementById('setting-height').value = this.profile.height || '';
       document.getElementById('setting-age').value = this.profile.age || '';
       document.getElementById('setting-target-weight').value = this.profile.targetWeight || '';
@@ -111,6 +112,15 @@ const App = {
         el.addEventListener('input', () => this.updateMetabolismDisplay());
       }
     });
+
+    // 目标体重和日期输入监听（实时更新目标摘要）
+    ['setting-target-weight', 'setting-target-date'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('change', () => this.updateTargetSummary());
+        el.addEventListener('input', () => this.updateTargetSummary());
+      }
+    });
   },
 
   switchPage(page) {
@@ -141,6 +151,9 @@ const App = {
         break;
       case 'exercise':
         this.renderExercisePage();
+        break;
+      case 'ranking':
+        this.renderRankingPage();
         break;
       case 'settings':
         this.renderSettingsPage();
@@ -665,6 +678,175 @@ const App = {
     this.updateTargetSummary();
   },
 
+  // ==================== 排行榜页面 ====================
+
+  renderRankingPage() {
+    this.loadRankingData();
+    this.updateMyRanking();
+  },
+
+  async loadRankingData() {
+    const listContainer = document.getElementById('ranking-list');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = `
+      <div class="ranking-loading">
+        <span class="loading-spinner"></span>
+        <p>加载中...</p>
+      </div>
+    `;
+
+    try {
+      // 使用静态演示数据（实际部署时替换为真实API）
+      const demoData = [
+        { nickname: '减脂达人小王', progress: 85, weightLost: 8.5, avatar: '👤' },
+        { nickname: '健康生活', progress: 72, weightLost: 6.2, avatar: '👤' },
+        { nickname: '坚持就是胜利', progress: 65, weightLost: 5.8, avatar: '👤' },
+        { nickname: ' fitnessgirl ', progress: 58, weightLost: 4.5, avatar: '👤' },
+        { nickname: '运动健将', progress: 45, weightLost: 3.2, avatar: '👤' },
+      ];
+
+      // 计算我的排名
+      const myProgress = this.calculateMyProgress();
+      if (myProgress > 0) {
+        demoData.push({
+          nickname: this.profile?.nickname || '我',
+          progress: myProgress,
+          weightLost: this.calculateWeightLost(),
+          avatar: '😊',
+          isMe: true
+        });
+      }
+
+      // 按进度排序
+      demoData.sort((a, b) => b.progress - a.progress);
+
+      // 渲染列表
+      listContainer.innerHTML = demoData.map((item, index) => `
+        <div class="ranking-item ${index < 3 ? 'top-' + (index + 1) : ''} ${item.isMe ? 'is-me' : ''}">
+          <div class="rank-position">${index + 1}</div>
+          <div class="rank-avatar">${item.avatar}</div>
+          <div class="rank-info">
+            <div class="rank-name">${item.nickname} ${item.isMe ? '(你)' : ''}</div>
+            <div class="rank-progress">已减 ${item.weightLost} kg</div>
+          </div>
+          <div class="rank-value">
+            <div class="rank-percent">${item.progress}%</div>
+            <div class="rank-diff">目标完成</div>
+          </div>
+        </div>
+      `).join('');
+
+      // 更新我的排名显示
+      const myIndex = demoData.findIndex(item => item.isMe);
+      if (myIndex >= 0) {
+        document.getElementById('my-rank').textContent = myIndex + 1;
+      }
+
+      // 更新时间
+      document.getElementById('rank-update-time').textContent = '刚刚更新';
+
+    } catch (error) {
+      listContainer.innerHTML = `
+        <div class="empty-state">
+          加载失败，请稍后重试<br>
+          <small>${error.message}</small>
+        </div>
+      `;
+    }
+  },
+
+  updateMyRanking() {
+    const progress = this.calculateMyProgress();
+    const weightLost = this.calculateWeightLost();
+
+    // 更新进度环
+    const ring = document.getElementById('my-progress-ring');
+    if (ring && progress > 0) {
+      const circumference = 2 * Math.PI * 40;
+      const offset = circumference * (1 - progress / 100);
+      ring.style.strokeDasharray = circumference;
+      ring.style.strokeDashoffset = offset;
+    }
+
+    document.getElementById('my-progress').textContent = progress + '%';
+    document.getElementById('my-weight-diff').textContent =
+      progress > 0 ? `已减 ${weightLost} kg` : '尚未设置目标';
+  },
+
+  calculateMyProgress() {
+    if (!this.profile?.targetWeight) return 0;
+
+    const weights = Storage.getWeights();
+    if (weights.length < 2) return 0;
+
+    // 找到开始记录的体重（最早的记录）
+    const startWeight = weights[weights.length - 1].weight;
+    const currentWeight = weights[0].weight;
+    const targetWeight = this.profile.targetWeight;
+
+    if (startWeight <= targetWeight) return 0;
+
+    const totalToLose = startWeight - targetWeight;
+    const lost = startWeight - currentWeight;
+
+    return Math.min(Math.round((lost / totalToLose) * 100), 100);
+  },
+
+  calculateWeightLost() {
+    const weights = Storage.getWeights();
+    if (weights.length < 2) return 0;
+
+    const startWeight = weights[weights.length - 1].weight;
+    const currentWeight = weights[0].weight;
+
+    return Math.max(0, (startWeight - currentWeight).toFixed(1));
+  },
+
+  async uploadRankingData() {
+    const nickname = this.profile?.nickname;
+    if (!nickname) {
+      alert('请先设置昵称！\n\n前往「设置」页面填写昵称后再上传。');
+      this.switchPage('settings');
+      return;
+    }
+
+    const progress = this.calculateMyProgress();
+    if (progress <= 0) {
+      alert('暂无进度数据\n\n需要：\n1. 设置目标体重\n2. 记录至少2天的体重');
+      return;
+    }
+
+    // 模拟上传
+    const btn = document.querySelector('#upload-ranking-section button');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span>⏳</span> 上传中...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.innerHTML = '<span>✅</span> 上传成功';
+      this.loadRankingData();
+
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }, 2000);
+    }, 1500);
+
+    // 实际部署时替换为真实API：
+    // const data = {
+    //   nickname: nickname,
+    //   progress: progress,
+    //   weightLost: this.calculateWeightLost(),
+    //   timestamp: new Date().toISOString()
+    // };
+    // await fetch('YOUR_API_ENDPOINT', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(data)
+    // });
+  },
+
   updateMetabolismDisplay() {
     const height = parseFloat(document.getElementById('setting-height')?.value);
     const age = parseInt(document.getElementById('setting-age')?.value);
@@ -726,6 +908,7 @@ const App = {
 
   saveSettings() {
     const profile = {
+      nickname: document.getElementById('setting-nickname').value.trim(),
       height: parseFloat(document.getElementById('setting-height').value),
       age: parseInt(document.getElementById('setting-age').value),
       gender: document.querySelector('.gender-btn.active')?.dataset.gender || 'male',
@@ -1000,6 +1183,10 @@ function handleImport(input) {
 
 function clearAllData() {
   App.clearAllData();
+}
+
+function uploadRankingData() {
+  App.uploadRankingData();
 }
 
 // 初始化

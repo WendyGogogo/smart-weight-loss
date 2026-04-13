@@ -36,6 +36,10 @@
             <span class="nav-icon">🏃</span>
             <span class="nav-label">运动</span>
         </a>
+        <a href="#" class="nav-item" data-page="ranking">
+            <span class="nav-icon">🏆</span>
+            <span class="nav-label">排行榜</span>
+        </a>
         <a href="#" class="nav-item" data-page="settings">
             <span class="nav-icon">⚙️</span>
             <span class="nav-label">设置</span>
@@ -364,11 +368,98 @@
             </div>
         </section>
 
+        <!-- 排行榜页面 -->
+        <section id="ranking-page" class="page">
+            <header class="page-header">
+                <h1>减脂排行榜</h1>
+            </header>
+
+            <!-- 我的排名 -->
+            <div class="ranking-hero" id="my-ranking-section">
+                <div class="my-rank-badge">
+                    <span class="rank-number" id="my-rank">--</span>
+                    <span class="rank-label">我的排名</span>
+                </div>
+                <div class="my-progress">
+                    <div class="progress-ring-small">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="ring-bg" cx="50" cy="50" r="40"/>
+                            <circle class="ring-progress" id="my-progress-ring" cx="50" cy="50" r="40"/>
+                        </svg>
+                        <div class="ring-center">
+                            <span id="my-progress">0%</span>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <p>目标完成度</p>
+                        <p class="sub" id="my-weight-diff">已减 -- kg</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 排行榜列表 -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>今日榜单</h3>
+                    <span class="update-time" id="rank-update-time">刚刚更新</span>
+                </div>
+                <div class="ranking-list" id="ranking-list">
+                    <div class="ranking-loading">
+                        <span class="loading-spinner"></span>
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 排行榜说明 -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>榜单规则</h3>
+                </div>
+                <div class="ranking-rules">
+                    <div class="rule-item">
+                        <span class="rule-icon">🎯</span>
+                        <p>根据目标完成百分比排名</p>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon">📊</span>
+                        <p>需设置目标体重和昵称</p>
+                    </div>
+                    <div class="rule-item">
+                        <span class="rule-icon">🔒</span>
+                        <p>仅记录体重变化，保护隐私</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 上传进度按钮 -->
+            <div class="section-card" id="upload-ranking-section">
+                <button class="btn-primary btn-full" onclick="uploadRankingData()">
+                    <span>📤</span> 上传我的进度
+                </button>
+                <p class="input-hint" style="text-align: center; margin-top: 8px;">
+                    点击上传今日数据到排行榜
+                </p>
+            </div>
+        </section>
+
         <!-- 设置页面 -->
         <section id="settings-page" class="page">
             <header class="page-header">
                 <h1>个人设置</h1>
             </header>
+
+            <!-- 用户信息 -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>用户信息</h3>
+                </div>
+                <div class="form-group">
+                    <label>昵称（用于排行榜）</label>
+                    <input type="text" id="setting-nickname" placeholder="输入你的昵称" maxlength="20">
+                    <p class="input-hint">设置昵称后可参与减脂排行榜</p>
+                </div>
+            </div>
 
             <!-- 身体数据 -->
             <div class="section-card">

@@ -91,22 +91,16 @@ const Storage = {
     const morning = dualWeights[date].morning?.weight;
     const evening = dualWeights[date].evening?.weight;
 
-    if (morning && evening) {
-      this.saveWeight({
-        date,
-        weight: parseFloat(((morning + evening) / 2).toFixed(1)),
-        bmi: 0,
-        bodyFat: 0,
-        isAverage: true
-      });
-    } else {
-      this.saveWeight({
-        date,
-        weight: parseFloat(weight),
-        bmi: 0,
-        bodyFat: 0
-      });
-    }
+    // 以早起体重为准，如果没有早起体重则使用当前输入的体重
+    const dailyWeight = morning || parseFloat(weight);
+
+    this.saveWeight({
+      date,
+      weight: dailyWeight,
+      bmi: 0,
+      bodyFat: 0,
+      source: morning && evening ? 'morning' : 'single'
+    });
   },
 
   getDualWeightByDate(date) {
