@@ -343,7 +343,7 @@ const App = {
         badgeEl.textContent = assessment.level;
         badgeEl.className = 'assessment-badge ' + assessment.badge;
 
-        document.getElementById('weight-diff').textContent = `差值: ${assessment.diff} kg`;
+        document.getElementById('weight-diff').textContent = `夜间消耗: ${assessment.diff} kg`;
         document.getElementById('assessment-tip').textContent = assessment.tip;
       }
     } else {
