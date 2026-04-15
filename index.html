@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#6366f1">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- 顶部状态栏 -->
@@ -28,10 +27,6 @@
             <span class="nav-icon">⚖️</span>
             <span class="nav-label">体重</span>
         </a>
-        <a href="#" class="nav-item" data-page="diet">
-            <span class="nav-icon">🍽️</span>
-            <span class="nav-label">饮食</span>
-        </a>
         <a href="#" class="nav-item" data-page="exercise">
             <span class="nav-icon">🏃</span>
             <span class="nav-label">运动</span>
@@ -41,8 +36,8 @@
             <span class="nav-label">排行榜</span>
         </a>
         <a href="#" class="nav-item" data-page="settings">
-            <span class="nav-icon">⚙️</span>
-            <span class="nav-label">设置</span>
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">我的</span>
         </a>
     </nav>
 
@@ -50,57 +45,75 @@
     <main class="main-content">
         <!-- 今日概览 -->
         <section id="dashboard-page" class="page active">
-            <!-- 热量缺口环形图 -->
-            <div class="dashboard-hero">
-                <div class="ring-container">
-                    <svg class="progress-ring" viewBox="0 0 200 200">
-                        <circle class="ring-bg" cx="100" cy="100" r="85"/>
-                        <circle class="ring-progress" id="gap-ring" cx="100" cy="100" r="85"/>
-                        <circle class="ring-inner-bg" cx="100" cy="100" r="65"/>
-                        <circle class="ring-inner-progress" id="tdee-ring" cx="100" cy="100" r="65"/>
-                    </svg>
-                    <div class="ring-center">
-                        <div class="gap-value" id="gap-value">0</div>
-                        <div class="gap-unit">kcal 缺口</div>
-                        <div class="gap-target">目标: <span id="target-gap-display">500</span></div>
+            <!-- 我的努力 - 圆形进度 -->
+            <div class="dashboard-hero my-effort">
+                <div class="effort-header">我的努力</div>
+                <div class="effort-rings">
+                    <div class="effort-ring-item">
+                        <div class="ring-container small">
+                            <svg class="progress-ring" viewBox="0 0 120 120">
+                                <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                                <circle class="ring-progress" id="target-ring" cx="60" cy="60" r="50"/>
+                            </svg>
+                            <div class="ring-center">
+                                <div class="ring-value" id="target-kg">--</div>
+                                <div class="ring-label">kg</div>
+                            </div>
+                        </div>
+                        <div class="ring-desc">距离目标</div>
+                    </div>
+                    <div class="effort-ring-item">
+                        <div class="ring-container small">
+                            <svg class="progress-ring" viewBox="0 0 120 120">
+                                <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                                <circle class="ring-progress" id="progress-ring" cx="60" cy="60" r="50"/>
+                            </svg>
+                            <div class="ring-center">
+                                <div class="ring-value" id="progress-percent">--%</div>
+                            </div>
+                        </div>
+                        <div class="ring-desc">完成率</div>
+                    </div>
+                    <div class="effort-ring-item">
+                        <div class="rank-circle" id="my-rank-display">
+                            <span class="rank-num">--</span>
+                        </div>
+                        <div class="ring-desc">排名</div>
                     </div>
                 </div>
-                <div class="gap-status" id="gap-status">加油！</div>
             </div>
 
-            <!-- 三大核心数据 -->
-            <div class="metrics-row">
-                <div class="metric-box">
-                    <span class="metric-icon">🔥</span>
-                    <span class="metric-value" id="tdee-display">--</span>
-                    <span class="metric-label">TDEE</span>
-                </div>
-                <div class="metric-box intake">
-                    <span class="metric-icon">🍔</span>
-                    <span class="metric-value" id="stat-intake">--</span>
-                    <span class="metric-label">摄入</span>
-                </div>
-                <div class="metric-box burn">
-                    <span class="metric-icon">🏃</span>
-                    <span class="metric-value" id="stat-burn">--</span>
-                    <span class="metric-label">运动</span>
-                </div>
-            </div>
-
-            <!-- 智能建议 -->
-            <div class="suggestion-card" id="ai-suggestion">
-                <div class="suggestion-icon">💡</div>
-                <p class="suggestion-text" id="suggestion-text">欢迎使用减脂助手！请先设置个人信息和目标。</p>
-            </div>
-
-            <!-- 今日记录列表 -->
+            <!-- 日历模块 -->
             <div class="section-card">
                 <div class="section-header">
-                    <h3>今日记录</h3>
-                    <button class="btn-icon" onclick="showQuickAdd()">+</button>
+                    <h3>打卡日历</h3>
+                    <span class="month-nav">
+                        <button onclick="changeMonth(-1)">‹</button>
+                        <span id="calendar-month">2024年1月</span>
+                        <button onclick="changeMonth(1)">›</button>
+                    </span>
                 </div>
-                <div class="record-list" id="today-records">
-                    <div class="empty-state">暂无记录，点击下方按钮添加</div>
+                <div class="calendar-grid" id="dashboard-calendar">
+                    <!-- 日历由 JS 生成 -->
+                </div>
+                <div class="calendar-legend">
+                    <span><span class="dot weight"></span>体重</span>
+                    <span><span class="dot exercise"></span>运动</span>
+                    <span><span class="dot milktea"></span>奶茶</span>
+                </div>
+            </div>
+
+            <!-- 统计 -->
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="stat-icon">🏃</span>
+                    <span class="stat-value" id="exercise-days">0</span>
+                    <span class="stat-label">锻炼天数</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-icon">🧋</span>
+                    <span class="stat-value" id="milktea-days">0</span>
+                    <span class="stat-label">奶茶天数</span>
                 </div>
             </div>
         </section>
@@ -164,6 +177,27 @@
                 </div>
             </div>
 
+            <!-- 体重差日历 -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>每日体重差</h3>
+                    <span class="month-nav">
+                        <button onclick="changeWeightMonth(-1)">‹</button>
+                        <span id="weight-calendar-month">2024年1月</span>
+                        <button onclick="changeWeightMonth(1)">›</button>
+                    </span>
+                </div>
+                <div class="calendar-grid weight-diff-calendar" id="weight-calendar">
+                    <!-- 日历由 JS 生成 -->
+                </div>
+                <div class="calendar-legend">
+                    <span><span class="dot excellent"></span>优秀 &gt;1.0</span>
+                    <span><span class="dot good"></span>良好 0.7-1.0</span>
+                    <span><span class="dot normal"></span>正常 0.5-0.7</span>
+                    <span><span class="dot slow"></span>偏慢 &lt;0.5</span>
+                </div>
+            </div>
+
             <!-- 体重趋势图 -->
             <div class="section-card chart-card">
                 <div class="section-header">
@@ -190,81 +224,6 @@
             </div>
         </section>
 
-        <!-- 饮食页面 -->
-        <section id="diet-page" class="page">
-            <header class="page-header">
-                <h1>饮食记录</h1>
-            </header>
-
-            <!-- 今日摄入概览 -->
-            <div class="diet-overview">
-                <div class="calorie-ring">
-                    <div class="calorie-info">
-                        <span class="calorie-current" id="diet-total">0</span>
-                        <span class="calorie-target">/ <span id="diet-target">--</span> kcal</span>
-                    </div>
-                    <div class="calorie-progress">
-                        <div class="progress-bar" id="diet-progress-bar"></div>
-                    </div>
-                </div>
-                <div class="remaining-calories">
-                    还可摄入: <span id="remaining-calories" class="highlight">--</span> kcal
-                </div>
-                <div class="suggested-intake">
-                    建议摄入不低于基础代谢的卡路里
-                </div>
-            </div>
-
-            <!-- 手动添加热量 -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3>添加热量</h3>
-                </div>
-                <div class="manual-calorie-input">
-                    <div class="input-row">
-                        <input type="text" id="food-name" placeholder="食物名称（如：午餐）">
-                        <input type="number" id="food-calories" placeholder="卡路里">
-                        <span class="unit-label">kcal</span>
-                    </div>
-                    <button class="btn-primary btn-full" onclick="addManualCalories()">
-                        + 添加记录
-                    </button>
-                </div>
-            </div>
-
-            <!-- 快捷食物 -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3>快捷添加</h3>
-                </div>
-                <div class="quick-foods-grid">
-                    <div class="food-category">
-                        <h4>家常食物</h4>
-                        <div class="quick-foods" id="quick-foods-home"></div>
-                    </div>
-                    <div class="food-category">
-                        <h4>外卖/快餐</h4>
-                        <div class="quick-foods" id="quick-foods-takeout"></div>
-                    </div>
-                    <div class="food-category">
-                        <h4>饮品</h4>
-                        <div class="quick-foods" id="quick-foods-drink"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 今日饮食记录 -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3>今日记录</h3>
-                    <button class="btn-text" onclick="clearTodayDiet()">清空</button>
-                </div>
-                <div class="food-list" id="diet-list">
-                    <div class="empty-state">今天还没有记录饮食</div>
-                </div>
-            </div>
-        </section>
-
         <!-- 运动页面 -->
         <section id="exercise-page" class="page">
             <header class="page-header">
@@ -280,80 +239,51 @@
                 </div>
             </div>
 
-            <!-- 四类运动快捷录入 -->
+            <!-- 运动快捷录入 -->
             <div class="section-card">
                 <div class="section-header">
-                    <h3>快速录入运动</h3>
+                    <h3>快速录入</h3>
                 </div>
-                <div class="exercise-input-grid">
-                    <div class="exercise-input-item">
-                        <label>
-                            <span class="ex-label-icon">🚶</span>
-                            <span class="ex-label-text">热身/快走</span>
-                            <span class="met-tag">3.5 MET</span>
-                        </label>
-                        <div class="exercise-slider-group">
-                            <input type="range" id="ex-warmup" min="0" max="60" value="0" oninput="updateExerciseInput('warmup', this.value)">
-                            <div class="exercise-input-with-unit">
-                                <input type="number" id="ex-warmup-input" value="0" min="0" onchange="syncExerciseSlider('warmup', this.value)">
-                                <span>分钟</span>
-                            </div>
-                        </div>
-                        <div class="ex-calorie-preview" id="warmup-cal">≈ 0 kcal</div>
+                <div class="exercise-quick-list">
+                    <div class="ex-quick-item" onclick="quickAddExercise('warmup', 30)">
+                        <span class="ex-icon">🚶</span>
+                        <span class="ex-name">热身/快走</span>
+                        <span class="ex-cal">30分钟</span>
                     </div>
-
-                    <div class="exercise-input-item">
-                        <label>
-                            <span class="ex-label-icon">💪</span>
-                            <span class="ex-label-text">力量训练</span>
-                            <span class="met-tag">5.5 MET</span>
-                        </label>
-                        <div class="exercise-slider-group">
-                            <input type="range" id="ex-strength" min="0" max="90" value="0" oninput="updateExerciseInput('strength', this.value)">
-                            <div class="exercise-input-with-unit">
-                                <input type="number" id="ex-strength-input" value="0" min="0" onchange="syncExerciseSlider('strength', this.value)">
-                                <span>分钟</span>
-                            </div>
-                        </div>
-                        <div class="ex-calorie-preview" id="strength-cal">≈ 0 kcal</div>
+                    <div class="ex-quick-item" onclick="quickAddExercise('strength', 45)">
+                        <span class="ex-icon">💪</span>
+                        <span class="ex-name">力量训练</span>
+                        <span class="ex-cal">45分钟</span>
                     </div>
-
-                    <div class="exercise-input-item">
-                        <label>
-                            <span class="ex-label-icon">🧘</span>
-                            <span class="ex-label-text">核心/瑜伽</span>
-                            <span class="met-tag">4.5 MET</span>
-                        </label>
-                        <div class="exercise-slider-group">
-                            <input type="range" id="ex-core" min="0" max="60" value="0" oninput="updateExerciseInput('core', this.value)">
-                            <div class="exercise-input-with-unit">
-                                <input type="number" id="ex-core-input" value="0" min="0" onchange="syncExerciseSlider('core', this.value)">
-                                <span>分钟</span>
-                            </div>
-                        </div>
-                        <div class="ex-calorie-preview" id="core-cal">≈ 0 kcal</div>
+                    <div class="ex-quick-item" onclick="quickAddExercise('core', 30)">
+                        <span class="ex-icon">🧘</span>
+                        <span class="ex-name">核心/瑜伽</span>
+                        <span class="ex-cal">30分钟</span>
                     </div>
-
-                    <div class="exercise-input-item">
-                        <label>
-                            <span class="ex-label-icon">🏃</span>
-                            <span class="ex-label-text">有氧跑步</span>
-                            <span class="met-tag">8.5 MET</span>
-                        </label>
-                        <div class="exercise-slider-group">
-                            <input type="range" id="ex-cardio" min="0" max="90" value="0" oninput="updateExerciseInput('cardio', this.value)">
-                            <div class="exercise-input-with-unit">
-                                <input type="number" id="ex-cardio-input" value="0" min="0" onchange="syncExerciseSlider('cardio', this.value)">
-                                <span>分钟</span>
-                            </div>
-                        </div>
-                        <div class="ex-calorie-preview" id="cardio-cal">≈ 0 kcal</div>
+                    <div class="ex-quick-item" onclick="quickAddExercise('cardio', 30)">
+                        <span class="ex-icon">🏃</span>
+                        <span class="ex-name">有氧跑步</span>
+                        <span class="ex-cal">30分钟</span>
                     </div>
                 </div>
-
-                <button class="btn-primary btn-full" onclick="saveExercises()" style="margin-top: 16px;">
-                    保存今日运动
+                <button class="btn-primary btn-full" onclick="showCustomExerciseModal()">
+                    自定义运动时长
                 </button>
+            </div>
+
+            <!-- 运动消耗日历 -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>运动日历</h3>
+                    <span class="month-nav">
+                        <button onclick="changeExerciseMonth(-1)">‹</button>
+                        <span id="exercise-calendar-month">2024年1月</span>
+                        <button onclick="changeExerciseMonth(1)">›</button>
+                    </span>
+                </div>
+                <div class="calendar-grid exercise-calendar" id="exercise-calendar">
+                    <!-- 日历由 JS 生成 -->
+                </div>
             </div>
 
             <!-- 今日运动记录 -->
@@ -371,7 +301,7 @@
         <!-- 排行榜页面 -->
         <section id="ranking-page" class="page">
             <header class="page-header">
-                <h1>减脂排行榜</h1>
+                <h1>运动打卡排行榜</h1>
             </header>
 
             <!-- 我的排名 -->
@@ -381,18 +311,9 @@
                     <span class="rank-label">我的排名</span>
                 </div>
                 <div class="my-progress">
-                    <div class="progress-ring-small">
-                        <svg viewBox="0 0 100 100">
-                            <circle class="ring-bg" cx="50" cy="50" r="40"/>
-                            <circle class="ring-progress" id="my-progress-ring" cx="50" cy="50" r="40"/>
-                        </svg>
-                        <div class="ring-center">
-                            <span id="my-progress">0%</span>
-                        </div>
-                    </div>
-                    <div class="progress-info">
-                        <p>目标完成度</p>
-                        <p class="sub" id="my-weight-diff">已减 -- kg</p>
+                    <div class="stat-display">
+                        <div class="stat-num" id="my-exercise-days">0</div>
+                        <div class="stat-desc">锻炼天数</div>
                     </div>
                 </div>
             </div>
@@ -400,7 +321,7 @@
             <!-- 排行榜列表 -->
             <div class="section-card">
                 <div class="section-header">
-                    <h3>今日榜单</h3>
+                    <h3>打卡榜单</h3>
                     <span class="update-time" id="rank-update-time">刚刚更新</span>
                 </div>
                 <div class="ranking-list" id="ranking-list">
@@ -411,42 +332,21 @@
                 </div>
             </div>
 
-            <!-- 排行榜说明 -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3>榜单规则</h3>
-                </div>
-                <div class="ranking-rules">
-                    <div class="rule-item">
-                        <span class="rule-icon">🎯</span>
-                        <p>根据目标完成百分比排名</p>
-                    </div>
-                    <div class="rule-item">
-                        <span class="rule-icon">📊</span>
-                        <p>需设置目标体重和昵称</p>
-                    </div>
-                    <div class="rule-item">
-                        <span class="rule-icon">🔒</span>
-                        <p>仅记录体重变化，保护隐私</p>
-                    </div>
-                </div>
-            </div>
-
             <!-- 上传进度按钮 -->
             <div class="section-card" id="upload-ranking-section">
                 <button class="btn-primary btn-full" onclick="uploadRankingData()">
-                    <span>📤</span> 上传我的进度
+                    <span>📤</span> 上传我的打卡
                 </button>
                 <p class="input-hint" style="text-align: center; margin-top: 8px;">
-                    点击上传今日数据到排行榜
+                    点击上传今日锻炼数据
                 </p>
             </div>
         </section>
 
-        <!-- 设置页面 -->
+        <!-- 设置页面 - 改名为"我的" -->
         <section id="settings-page" class="page">
             <header class="page-header">
-                <h1>个人设置</h1>
+                <h1>我的</h1>
             </header>
 
             <!-- 用户信息 -->
@@ -457,7 +357,6 @@
                 <div class="form-group">
                     <label>昵称（用于排行榜）</label>
                     <input type="text" id="setting-nickname" placeholder="输入你的昵称" maxlength="20">
-                    <p class="input-hint">设置昵称后可参与减脂排行榜</p>
                 </div>
             </div>
 
@@ -489,7 +388,54 @@
                 </div>
             </div>
 
-            <!-- 代谢计算 -->
+            <!-- 减脂目标 -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>减脂目标</h3>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>初始体重 (kg)</label>
+                        <input type="number" id="setting-start-weight" placeholder="70" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>目标体重 (kg)</label>
+                        <input type="number" id="setting-target-weight" placeholder="65" step="0.1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>目标日期</label>
+                    <input type="date" id="setting-target-date">
+                </div>
+                <div class="form-group">
+                    <label>运动水平</label>
+                    <select id="setting-activity">
+                        <option value="1.2">久坐不动（办公室工作）</option>
+                        <option value="1.375">轻度活动（每周运动1-3次）</option>
+                        <option value="1.55" selected>中度活动（每周运动3-5次）</option>
+                        <option value="1.725">重度活动（每周运动6-7次）</option>
+                        <option value="1.9">极度活动（体力劳动者/运动员）</option>
+                    </select>
+                </div>
+
+                <!-- 计划生成 -->
+                <div class="plan-result" id="plan-result" style="display:none;">
+                    <div class="plan-item">
+                        <span class="plan-label">预计达成</span>
+                        <span class="plan-value"><span id="plan-days">--</span> 天</span>
+                    </div>
+                    <div class="plan-item">
+                        <span class="plan-label">每日减重</span>
+                        <span class="plan-value"><span id="plan-daily">--</span> kg</span>
+                    </div>
+                    <div class="plan-item">
+                        <span class="plan-label">每周减重</span>
+                        <span class="plan-value"><span id="plan-weekly">--</span> kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 代谢计算展示 -->
             <div class="section-card">
                 <div class="section-header">
                     <h3>代谢计算</h3>
@@ -503,47 +449,6 @@
                         <span class="metabolism-label">TDEE (每日消耗)</span>
                         <span class="metabolism-value" id="tdee-display-setting">-- kcal</span>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>活动水平</label>
-                    <select id="setting-activity" onchange="updateMetabolismDisplay()">
-                        <option value="1.2">久坐不动（办公室工作）</option>
-                        <option value="1.375">轻度活动（每周运动1-3次）</option>
-                        <option value="1.55" selected>中度活动（每周运动3-5次）</option>
-                        <option value="1.725">重度活动（每周运动6-7次）</option>
-                        <option value="1.9">极度活动（体力劳动者/运动员）</option>
-                    </select>
-                </div>
-                <p class="input-hint">TDEE = BMR × 活动系数</p>
-            </div>
-
-            <!-- 减脂目标 -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h3>减脂目标</h3>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>目标体重 (kg)</label>
-                        <input type="number" id="setting-target-weight" placeholder="65" step="0.1">
-                    </div>
-                    <div class="form-group">
-                        <label>目标日期</label>
-                        <input type="date" id="setting-target-date">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>每日热量缺口</label>
-                    <div class="gap-selector">
-                        <button class="gap-btn" data-gap="300" onclick="selectGap(300)">300<br><small>温和</small></button>
-                        <button class="gap-btn active" data-gap="500" onclick="selectGap(500)">500<br><small>推荐</small></button>
-                        <button class="gap-btn" data-gap="750" onclick="selectGap(750)">750<br><small>激进</small></button>
-                    </div>
-                    <input type="hidden" id="setting-gap" value="500">
-                </div>
-                <div class="target-summary" id="target-summary">
-                    <p>预计达成: <span id="target-days">--</span> 天</p>
-                    <p>每周减重: <span id="weekly-loss">--</span> kg</p>
                 </div>
             </div>
 
@@ -571,26 +476,6 @@
             </button>
         </section>
     </main>
-
-    <!-- 快速添加弹窗 -->
-    <div class="modal" id="quick-add-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>快速记录</h3>
-                <button class="close-btn" onclick="closeModal('quick-add-modal')">✕</button>
-            </div>
-            <div class="quick-actions">
-                <button class="quick-action-btn" onclick="showWeightModal(); closeModal('quick-add-modal')">
-                    <span>⚖️</span>
-                    <span>记录体重</span>
-                </button>
-                <button class="quick-action-btn" onclick="focusDiet(); closeModal('quick-add-modal')">
-                    <span>🍽️</span>
-                    <span>记录饮食</span>
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- 体重录入弹窗 -->
     <div class="modal" id="weight-modal">
@@ -623,6 +508,58 @@
             <div class="modal-footer">
                 <button class="btn-secondary" onclick="closeModal('weight-modal')">取消</button>
                 <button class="btn-primary" onclick="saveWeight()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自定义运动弹窗 -->
+    <div class="modal" id="exercise-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>自定义运动</h3>
+                <button class="close-btn" onclick="closeModal('exercise-modal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>运动类型</label>
+                    <select id="custom-ex-type">
+                        <option value="warmup">热身/快走 (3.5 MET)</option>
+                        <option value="strength">力量训练 (5.5 MET)</option>
+                        <option value="core">核心/瑜伽 (4.5 MET)</option>
+                        <option value="cardio">有氧跑步 (8.5 MET)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>时长 (分钟)</label>
+                    <input type="number" id="custom-ex-minutes" placeholder="30" min="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('exercise-modal')">取消</button>
+                <button class="btn-primary" onclick="saveCustomExercise()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 奶茶打卡弹窗 -->
+    <div class="modal" id="milktea-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>记录奶茶</h3>
+                <button class="close-btn" onclick="closeModal('milktea-modal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="text-align:center;margin-bottom:20px;">今天喝奶茶了吗？</p>
+                <div class="milktea-options">
+                    <button class="milktea-btn" onclick="recordMilkTea(true)">
+                        <span class="milktea-icon">🧋</span>
+                        <span>喝了</span>
+                    </button>
+                    <button class="milktea-btn no" onclick="recordMilkTea(false)">
+                        <span class="milktea-icon">❌</span>
+                        <span>没喝</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

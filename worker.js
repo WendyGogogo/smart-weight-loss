@@ -64,15 +64,14 @@ async function getRanking(RANKING) {
     }
   }
 
-  // 按进度排序
-  rankings.sort((a, b) => b.progress - a.progress);
+  // 按锻炼天数排序
+  rankings.sort((a, b) => b.exerciseDays - a.exerciseDays);
 
   // 只返回前 50 名
   return rankings.slice(0, 50).map((item, index) => ({
     rank: index + 1,
     nickname: item.nickname,
-    progress: item.progress,
-    weightLost: item.weightLost,
+    exerciseDays: item.exerciseDays,
     avatar: item.avatar || '👤',
     updatedAt: item.updatedAt
   }));
@@ -81,7 +80,7 @@ async function getRanking(RANKING) {
 // 更新用户数据
 async function updateRanking(RANKING, data) {
   // 验证数据
-  if (!data.nickname || !data.progress) {
+  if (!data.nickname || data.exerciseDays === undefined) {
     return { error: 'Missing required fields' };
   }
 
@@ -90,8 +89,7 @@ async function updateRanking(RANKING, data) {
 
   const record = {
     nickname: data.nickname.substring(0, 20), // 限制长度
-    progress: Math.min(100, Math.max(0, parseInt(data.progress) || 0)),
-    weightLost: parseFloat(data.weightLost) || 0,
+    exerciseDays: Math.max(0, parseInt(data.exerciseDays) || 0),
     avatar: data.avatar || '👤',
     updatedAt: new Date().toISOString()
   };

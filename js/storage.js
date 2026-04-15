@@ -10,7 +10,8 @@ const Storage = {
     WEIGHTS: 'wlp_weights',
     DUAL_WEIGHTS: 'wlp_dual_weights',
     FOODS: 'wlp_foods',
-    EXERCISES: 'wlp_exercises'
+    EXERCISES: 'wlp_exercises',
+    MILK_TEA: 'wlp_milk_tea'
   },
 
   // ==================== 用户信息 ====================
@@ -188,6 +189,41 @@ const Storage = {
     return exercises.reduce((sum, e) => sum + (e.calories || 0), 0);
   },
 
+  clearTodayExercise(date) {
+    const exercises = this.getExercises();
+    const filtered = exercises.filter(e => e.date !== date);
+    this._set(this.KEYS.EXERCISES, filtered);
+  },
+
+  // ==================== 奶茶记录 ====================
+
+  getMilkTeaRecords() {
+    return this._get(this.KEYS.MILK_TEA) || [];
+  },
+
+  getMilkTeaByDate(date) {
+    const records = this.getMilkTeaRecords();
+    const record = records.find(r => r.date === date);
+    return record ? record.hadMilkTea : false;
+  },
+
+  saveMilkTeaRecord(record) {
+    const records = this.getMilkTeaRecords();
+    const existingIndex = records.findIndex(r => r.date === record.date);
+
+    if (existingIndex >= 0) {
+      records[existingIndex] = { ...records[existingIndex], ...record };
+    } else {
+      records.push({
+        id: Date.now().toString(),
+        date: record.date || Calculator.getToday(),
+        hadMilkTea: record.hadMilkTea
+      });
+    }
+
+    this._set(this.KEYS.MILK_TEA, records);
+  },
+
   // ==================== 数据导入导出 ====================
 
   exportData() {
@@ -199,7 +235,8 @@ const Storage = {
       weights: this.getWeights(),
       dualWeights: this.getDualWeights(),
       foods: this.getFoods(),
-      exercises: this.getExercises()
+      exercises: this.getExercises(),
+      milkTea: this.getMilkTeaRecords()
     };
   },
 
@@ -211,6 +248,7 @@ const Storage = {
       if (data.dualWeights) this._set(this.KEYS.DUAL_WEIGHTS, data.dualWeights);
       if (data.foods) this._set(this.KEYS.FOODS, data.foods);
       if (data.exercises) this._set(this.KEYS.EXERCISES, data.exercises);
+      if (data.milkTea) this._set(this.KEYS.MILK_TEA, data.milkTea);
       return true;
     } catch (e) {
       console.error('导入失败:', e);
