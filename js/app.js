@@ -403,7 +403,6 @@ const App = {
   },
 
   renderWeightChart() {
-    // 保留原有图表逻辑
     const ctx = document.getElementById('weight-chart');
     if (!ctx) return;
 
@@ -415,13 +414,100 @@ const App = {
       weights = weights.slice(0, 30);
     }
 
+    // 如果没有数据，显示空图表
     if (weights.length === 0) {
-      // 显示空状态
+      if (this.weightChart) {
+        this.weightChart.destroy();
+      }
+      this.weightChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['暂无数据'],
+          datasets: [{
+            data: [0],
+            borderColor: '#e5e7eb',
+            backgroundColor: 'transparent',
+            pointRadius: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { display: false, min: 0, max: 100 },
+            x: { display: false }
+          }
+        }
+      });
       return;
     }
 
-    // 使用 Chart.js 绘制图表（与原有逻辑相同）
-    // ...
+    // 只有1条数据时，创建一个点图表
+    const sorted = [...weights].reverse();
+    let labels, data;
+
+    if (sorted.length === 1) {
+      labels = [Calculator.getFriendlyDate(sorted[0].date), ''];
+      data = [sorted[0].weight, sorted[0].weight];
+    } else {
+      labels = sorted.map(w => Calculator.getFriendlyDate(w.date));
+      data = sorted.map(w => w.weight);
+    }
+
+    // 目标线
+    const targetWeight = this.profile?.targetWeight;
+    const targetData = targetWeight ? labels.map(() => targetWeight) : null;
+
+    if (this.weightChart) {
+      this.weightChart.destroy();
+    }
+
+    this.weightChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '体重',
+          data: data,
+          borderColor: '#6366f1',
+          backgroundColor: 'rgba(99, 102, 241, 0.1)',
+          tension: sorted.length === 1 ? 0 : 0.4,
+          fill: true,
+          pointRadius: sorted.length === 1 ? 6 : 4,
+          pointBackgroundColor: '#6366f1'
+        }, ...(targetData ? [{
+          label: '目标',
+          data: targetData,
+          borderColor: '#10b981',
+          borderDash: [5, 5],
+          tension: 0,
+          fill: false,
+          pointRadius: 0
+        }] : [])]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: !!targetWeight,
+            position: 'bottom'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            grid: { color: '#f3f4f6' },
+            ticks: { font: { size: 11 } }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { font: { size: 11 } }
+          }
+        }
+      }
+    });
   },
 
   renderWeightHistory() {
@@ -937,12 +1023,28 @@ function showMilkTeaModal() {
   document.getElementById('milktea-modal').classList.add('active');
 }
 
+let selectedDate = null;
+
 function showDateDetail(date) {
-  // 显示某日详情或快捷操作
-  const hasMilkTea = Storage.getMilkTeaByDate(date);
-  if (!hasMilkTea) {
+  selectedDate = date;
+  const dateObj = new Date(date);
+  const dateStr = `${dateObj.getMonth() + 1}月${dateObj.getDate()}日`;
+  document.getElementById('date-action-title').textContent = dateStr;
+  document.getElementById('date-action-modal').classList.add('active');
+}
+
+function handleDateAction(action) {
+  if (!selectedDate) return;
+
+  if (action === 'exercise') {
+    // 切换到运动页面并设置日期
+    App.switchPage('exercise');
+  } else if (action === 'milktea') {
+    // 显示奶茶弹窗
     showMilkTeaModal();
   }
+
+  closeModal('date-action-modal');
 }
 
 // 数字键盘输入
