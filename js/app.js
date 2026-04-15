@@ -3,6 +3,12 @@
  */
 
 const App = {
+  // 排行榜 API 配置（部署 Worker 后填写 URL）
+  API_BASE: 'https://your-worker-url.workers.dev',
+
+  // 是否启用真实排行榜
+  enableRealRanking: false,
+
   currentPage: 'dashboard',
   profile: null,
   settings: null,
@@ -697,7 +703,21 @@ const App = {
     `;
 
     try {
-      // 使用静态演示数据（实际部署时替换为真实API）
+      // 从服务器获取排行榜数据
+      let serverData = []
+
+      if (this.enableRealRanking && this.API_BASE) {
+        try {
+          const response = await fetch(`${this.API_BASE}/api/ranking`)
+          if (response.ok) {
+            serverData = await response.json()
+          }
+        } catch (e) {
+          console.log('排行榜加载失败，使用本地数据')
+        }
+      }
+
+      // 演示数据
       const demoData = [
         { nickname: '减脂达人小王', progress: 85, weightLost: 8.5, avatar: '👤' },
         { nickname: '健康生活', progress: 72, weightLost: 6.2, avatar: '👤' },
@@ -717,6 +737,19 @@ const App = {
           isMe: true
         });
       }
+
+      // 合并服务器数据（排除已在演示数据或本地的用户）
+      const existingNicknames = new Set(demoData.map(d => d.nickname));
+      serverData.forEach(item => {
+        if (!existingNicknames.has(item.nickname)) {
+          demoData.push({
+            nickname: item.nickname,
+            progress: item.progress,
+            weightLost: item.weightLost,
+            avatar: item.avatar || '👤'
+          });
+        }
+      });
 
       // 按进度排序
       demoData.sort((a, b) => b.progress - a.progress);
@@ -817,23 +850,55 @@ const App = {
       return;
     }
 
-    // 模拟上传
+    // 上传到服务器
     const btn = document.querySelector('#upload-ranking-section button');
     const originalText = btn.innerHTML;
     btn.innerHTML = '<span>⏳</span> 上传中...';
     btn.disabled = true;
 
-    setTimeout(() => {
-      btn.innerHTML = '<span>✅</span> 上传成功';
-      this.loadRankingData();
+    // 如果启用了真实排行榜且配置了 API
+    if (this.enableRealRanking && this.API_BASE) {
+      try {
+        const response = await fetch(`${this.API_BASE}/api/ranking`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nickname: nickname,
+            progress: progress,
+            weightLost: this.calculateWeightLost(),
+            avatar: '😊'
+          })
+        });
+
+        if (response.ok) {
+          btn.innerHTML = '<span>✅</span> 上传成功';
+          this.loadRankingData();
+        } else {
+          btn.innerHTML = '<span>❌</span> 上传失败';
+        }
+      } catch (e) {
+        console.error('上传失败:', e);
+        btn.innerHTML = '<span>❌</span> 网络错误';
+      }
 
       setTimeout(() => {
         btn.innerHTML = originalText;
         btn.disabled = false;
       }, 2000);
-    }, 1500);
+    } else {
+      // 本地演示模式
+      setTimeout(() => {
+        btn.innerHTML = '<span>✅</span> 上传成功（本地）';
+        this.loadRankingData();
 
-    // 实际部署时替换为真实API：
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }, 2000);
+      }, 1500);
+    }
+
+    // Cloudflare Worker API 配置说明：
     // const data = {
     //   nickname: nickname,
     //   progress: progress,

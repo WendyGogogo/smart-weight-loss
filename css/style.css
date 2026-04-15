@@ -1364,7 +1364,7 @@ body {
 
 /* 排行榜页面 */
 .ranking-hero {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   border-radius: var(--radius-xl);
   padding: 24px;
   margin-bottom: 16px;
