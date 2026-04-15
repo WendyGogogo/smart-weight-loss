@@ -615,26 +615,55 @@ const App = {
     this.renderExerciseCalendar();
   },
 
-  quickAddExercise(type, minutes) {
+  updateQuickExercise(type, minutes) {
     const latestWeight = Storage.getLatestWeight()?.weight || 70;
-    const calories = Calculator.calculateExerciseBurn(latestWeight, type, minutes);
+    const calories = Calculator.calculateExerciseBurn(latestWeight, type, parseInt(minutes));
 
-    const typeNames = {
-      warmup: '热身/快走',
-      strength: '力量训练',
-      core: '核心/瑜伽',
-      cardio: '有氧跑步'
-    };
+    // 更新显示
+    document.getElementById(`${type}-minutes`).textContent = `${minutes}分钟`;
+    document.getElementById(`${type}-cal-preview`).textContent = `≈ ${calories} kcal`;
+  },
 
-    Storage.saveExercise({
-      date: this.today,
-      name: typeNames[type],
-      type: type,
-      minutes,
-      calories
+  saveQuickExercises() {
+    const types = [
+      { id: 'warmup', name: '热身/快走' },
+      { id: 'strength', name: '力量训练' },
+      { id: 'core', name: '核心/瑜伽' },
+      { id: 'cardio', name: '有氧跑步' }
+    ];
+
+    const latestWeight = Storage.getLatestWeight()?.weight || 70;
+    let hasExercise = false;
+
+    types.forEach(type => {
+      const minutes = parseInt(document.getElementById(`${type.id}-slider`).value) || 0;
+      if (minutes > 0) {
+        hasExercise = true;
+        const calories = Calculator.calculateExerciseBurn(latestWeight, type.id, minutes);
+        Storage.saveExercise({
+          date: this.today,
+          name: type.name,
+          type: type.id,
+          minutes,
+          calories
+        });
+      }
+    });
+
+    if (!hasExercise) {
+      alert('请至少选择一项运动时长');
+      return;
+    }
+
+    // 重置滑块
+    types.forEach(type => {
+      document.getElementById(`${type.id}-slider`).value = 0;
+      document.getElementById(`${type.id}-minutes`).textContent = '0分钟';
+      document.getElementById(`${type.id}-cal-preview`).textContent = '≈ 0 kcal';
     });
 
     this.renderExercisePage();
+    this.renderDashboard();
     alert('运动记录已保存！');
   },
 
@@ -1099,8 +1128,12 @@ function changeExerciseMonth(offset) {
 }
 
 // 快捷操作
-function quickAddExercise(type, minutes) {
-  App.quickAddExercise(type, minutes);
+function updateQuickExercise(type, minutes) {
+  App.updateQuickExercise(type, minutes);
+}
+
+function saveQuickExercises() {
+  App.saveQuickExercises();
 }
 
 function saveCustomExercise() {

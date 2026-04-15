@@ -245,29 +245,53 @@
                     <h3>快速录入</h3>
                 </div>
                 <div class="exercise-quick-list">
-                    <div class="ex-quick-item" onclick="quickAddExercise('warmup', 30)">
-                        <span class="ex-icon">🚶</span>
-                        <span class="ex-name">热身/快走</span>
-                        <span class="ex-cal">30分钟</span>
+                    <div class="ex-quick-item" data-type="warmup">
+                        <div class="ex-item-header">
+                            <span class="ex-icon">🚶</span>
+                            <span class="ex-name">热身/快走</span>
+                            <span class="ex-cal-preview" id="warmup-cal-preview">≈ 0 kcal</span>
+                        </div>
+                        <div class="ex-slider-row">
+                            <input type="range" class="ex-slider" id="warmup-slider" min="0" max="90" value="0" oninput="updateQuickExercise('warmup', this.value)">
+                            <span class="ex-minutes" id="warmup-minutes">0分钟</span>
+                        </div>
                     </div>
-                    <div class="ex-quick-item" onclick="quickAddExercise('strength', 45)">
-                        <span class="ex-icon">💪</span>
-                        <span class="ex-name">力量训练</span>
-                        <span class="ex-cal">45分钟</span>
+                    <div class="ex-quick-item" data-type="strength">
+                        <div class="ex-item-header">
+                            <span class="ex-icon">💪</span>
+                            <span class="ex-name">力量训练</span>
+                            <span class="ex-cal-preview" id="strength-cal-preview">≈ 0 kcal</span>
+                        </div>
+                        <div class="ex-slider-row">
+                            <input type="range" class="ex-slider" id="strength-slider" min="0" max="90" value="0" oninput="updateQuickExercise('strength', this.value)">
+                            <span class="ex-minutes" id="strength-minutes">0分钟</span>
+                        </div>
                     </div>
-                    <div class="ex-quick-item" onclick="quickAddExercise('core', 30)">
-                        <span class="ex-icon">🧘</span>
-                        <span class="ex-name">核心/瑜伽</span>
-                        <span class="ex-cal">30分钟</span>
+                    <div class="ex-quick-item" data-type="core">
+                        <div class="ex-item-header">
+                            <span class="ex-icon">🧘</span>
+                            <span class="ex-name">核心/瑜伽</span>
+                            <span class="ex-cal-preview" id="core-cal-preview">≈ 0 kcal</span>
+                        </div>
+                        <div class="ex-slider-row">
+                            <input type="range" class="ex-slider" id="core-slider" min="0" max="90" value="0" oninput="updateQuickExercise('core', this.value)">
+                            <span class="ex-minutes" id="core-minutes">0分钟</span>
+                        </div>
                     </div>
-                    <div class="ex-quick-item" onclick="quickAddExercise('cardio', 30)">
-                        <span class="ex-icon">🏃</span>
-                        <span class="ex-name">有氧跑步</span>
-                        <span class="ex-cal">30分钟</span>
+                    <div class="ex-quick-item" data-type="cardio">
+                        <div class="ex-item-header">
+                            <span class="ex-icon">🏃</span>
+                            <span class="ex-name">有氧跑步</span>
+                            <span class="ex-cal-preview" id="cardio-cal-preview">≈ 0 kcal</span>
+                        </div>
+                        <div class="ex-slider-row">
+                            <input type="range" class="ex-slider" id="cardio-slider" min="0" max="90" value="0" oninput="updateQuickExercise('cardio', this.value)">
+                            <span class="ex-minutes" id="cardio-minutes">0分钟</span>
+                        </div>
                     </div>
                 </div>
-                <button class="btn-primary btn-full" onclick="showCustomExerciseModal()">
-                    自定义运动时长
+                <button class="btn-primary btn-full" onclick="saveQuickExercises()">
+                    保存今日运动
                 </button>
             </div>
 
